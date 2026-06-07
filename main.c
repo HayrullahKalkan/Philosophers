@@ -1,76 +1,37 @@
-#include "philosophers.h"
+#include "philo.h"
 
-void *routines(void *arg)
+int	start_threads(t_data *data)
 {
-    int i = 0;
+	int	i;
 
-    while (i<5)
-    {
-        printf("hello %d\n", i);
-        usleep(100000);
-        i++;
-    }
-    return (NULL);
-}
-
-static int	ft_isdigit(int c)
-{
-    if(c >= '0' && c <= '9')
-        return (1);
+	i = 0;
+	while (i < data->num_philos)
+	{
+		if (pthread_create(&data->philos[i].thread, NULL,
+			routine, &data->philos[i]) != 0)
+			return (1);
+		i++;
+	}
+	i = 0;
+	while (i < data->num_philos)
+	{
+		pthread_join(data->philos[i].thread, NULL);
+		i++;
+	}
 	return (0);
 }
 
-long	ft_atol(char *str)
+int	main(int ac, char **av)
 {
-	long	res;
-	int		sign;
-	int		i;
+	t_data	data;
 
-	sign = 1;
-	res = 0;
-	i = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
-		i++;
-	if (str[i] == '+' || str[i] == '-')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-		res = res * 10 + (str[i++] - '0');
-	return (res * sign);
-}
+	if (parse_args(ac, av, &data))
+		return (printf("Error: args\n"), 1);
 
-void parser(int ac, char **av, t_data *data)
-{
-    int i = 1;
-    int *data_array;
-    
-    data_array = malloc((ac - 1) * sizeof(int));
-    while(av[i])
-    {
-        if (!ft_isdigit(av[i][0]))
-        {
-            printf("Error: Invalid argument\n");
-            exit(1);
-        }
-        data_array[i - 1] = ft_atol(av[i]);
-        i++;
-    }
-}
-int main(int ac, char **av)
-{
-    /*pthread_t thread;
+	if (init_all(&data))
+		return (printf("Error: init\n"), 1);
 
-    pthread_create(&thread, NULL, routines, NULL);
+	start_threads(&data);
 
-    while (1)
-    {
-        printf("main\n");
-        usleep(100000);
-    }*/
-    t_data data;
-    parser(ac, av, &data);
-
+	return (0);
 }
