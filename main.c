@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hakalkan <hakalkan@student.42istanbul.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/09 18:05:47 by hakalkan          #+#    #+#             */
+/*   Updated: 2026/06/09 18:05:47 by hakalkan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	start_threads(t_data *data)
@@ -31,6 +43,7 @@ int	main(int ac, char **av)
 	if (init_all(&data))
 		return (printf("Error: init\n"), 1);
 
+	data.start_time = get_time_ms();
 	start_threads(&data);
 
 	return (0);

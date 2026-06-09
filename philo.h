@@ -37,8 +37,7 @@ typedef struct s_philo
 	pthread_t		thread;
 
 	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-
+	pthread_mutex_t	*right_fork;	pthread_mutex_t	last_meal_mutex;
 	t_data			*data;
 
 }	t_philo;
@@ -56,5 +55,7 @@ void	*routine(void *arg);
 
 /* utils */
 long	get_time_ms(void);
+void	print_status(t_philo *philo, char *msg);
+int		check_death(t_philo *philo);
 
 #endif

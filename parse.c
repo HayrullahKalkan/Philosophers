@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hakalkan <hakalkan@student.42istanbul.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/09 18:05:52 by hakalkan          #+#    #+#             */
+/*   Updated: 2026/06/09 18:05:52 by hakalkan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	ft_isdigit(int c)
@@ -38,6 +50,7 @@ int	parse_args(int ac, char **av, t_data *data)
 	data->time_to_die = ft_atol(av[2]);
 	data->time_to_eat = ft_atol(av[3]);
 	data->time_to_sleep = ft_atol(av[4]);
+	data->simulation_end = 0;
 
 	if (data->num_philos <= 0
 		|| data->time_to_die <= 0

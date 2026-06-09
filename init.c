@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hakalkan <hakalkan@student.42istanbul.c    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/09 18:05:44 by hakalkan          #+#    #+#             */
+/*   Updated: 2026/06/09 18:05:44 by hakalkan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	init_forks(t_data *data)
@@ -38,16 +50,31 @@ int	init_philos(t_data *data)
 			(i + 1) % data->num_philos
 		];
 
+		pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL);
+
 		i++;
 	}
 	return (0);
 }
+
+void	print_status(t_philo *philo, char *msg)
+{
+	pthread_mutex_lock(&philo->data->print_mutex);
+	printf("%ld %d %s\n",
+		get_time_ms() - philo->data->start_time,
+		philo->id,
+		msg);
+	pthread_mutex_unlock(&philo->data->print_mutex);
+}
+
 
 int	init_all(t_data *data)
 {
 	if (init_forks(data))
 		return (1);
 	if (init_philos(data))
+		return (1);
+	if (pthread_mutex_init(&data->print_mutex, NULL))
 		return (1);
 	return (0);
 }
