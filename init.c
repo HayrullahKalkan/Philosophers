@@ -15,13 +15,18 @@
 int	init_forks(t_data *data)
 {
 	int	i;
+	int	fork_count;
 
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philos);
+	fork_count = data->num_philos;
+	if (data->num_philos == 1)
+		fork_count = 1;
+
+	data->forks = malloc(sizeof(pthread_mutex_t) * fork_count);
 	if (!data->forks)
 		return (1);
 
 	i = 0;
-	while (i < data->num_philos)
+	while (i < fork_count)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
@@ -77,4 +82,33 @@ int	init_all(t_data *data)
 	if (pthread_mutex_init(&data->print_mutex, NULL))
 		return (1);
 	return (0);
+}
+
+void	cleanup(t_data *data)
+{
+	int	i;
+
+	if (!data)
+		return ;
+
+	i = 0;
+	while (i < data->num_philos)
+	{
+		pthread_mutex_destroy(&data->philos[i].last_meal_mutex);
+		i++;
+	}
+
+	i = 0;
+	while (i < data->num_philos)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+
+	pthread_mutex_destroy(&data->print_mutex);
+
+	if (data->forks)
+		free(data->forks);
+	if (data->philos)
+		free(data->philos);
 }

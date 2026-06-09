@@ -108,3 +108,45 @@ void	*routine(void *arg)
 	}
 	return (NULL);
 }
+
+void	*monitor(void *arg)
+{
+	t_data	*data;
+	int		i;
+	int		all_ate;
+
+	data = (t_data *)arg;
+	while (!data->simulation_end)
+	{
+		i = 0;
+		all_ate = 1;
+		while (i < data->num_philos)
+		{
+			pthread_mutex_lock(&data->philos[i].last_meal_mutex);
+			if (get_time_ms() - data->philos[i].last_meal
+				> data->time_to_die)
+			{
+				pthread_mutex_unlock(&data->philos[i].last_meal_mutex);
+				print_status(&data->philos[i], "died");
+				pthread_mutex_lock(&data->print_mutex);
+				data->simulation_end = 1;
+				pthread_mutex_unlock(&data->print_mutex);
+				return (NULL);
+			}
+			pthread_mutex_unlock(&data->philos[i].last_meal_mutex);
+			if (data->must_eat_count != -1
+				&& data->philos[i].meals_eaten < data->must_eat_count)
+				all_ate = 0;
+			i++;
+		}
+		if (all_ate && data->must_eat_count != -1)
+		{
+			pthread_mutex_lock(&data->print_mutex);
+			data->simulation_end = 1;
+			pthread_mutex_unlock(&data->print_mutex);
+			return (NULL);
+		}
+		usleep(100);
+	}
+	return (NULL);
+}

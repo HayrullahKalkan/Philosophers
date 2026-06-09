@@ -49,9 +49,11 @@ int		ft_isdigit(int c);
 
 /* init */
 int		init_all(t_data *data);
+void	cleanup(t_data *data);
 
 /* routine */
 void	*routine(void *arg);
+void	*monitor(void *arg);
 
 /* utils */
 long	get_time_ms(void);

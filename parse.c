@@ -35,7 +35,11 @@ long	ft_atol(const char *str)
 	{
 		if (!ft_isdigit(str[i]))
 			return (-1);
+		if (res > 2147483647 / 10)
+			return (-1);
 		res = res * 10 + (str[i] - '0');
+		if (res > 2147483647)
+			return (-1);
 		i++;
 	}
 	return (res);

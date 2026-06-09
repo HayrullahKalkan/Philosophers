@@ -14,7 +14,8 @@
 
 int	start_threads(t_data *data)
 {
-	int	i;
+	int			i;
+	pthread_t	monitor_thread;
 
 	i = 0;
 	while (i < data->num_philos)
@@ -24,6 +25,9 @@ int	start_threads(t_data *data)
 			return (1);
 		i++;
 	}
+	if (pthread_create(&monitor_thread, NULL, monitor, data) != 0)
+		return (1);
+	pthread_join(monitor_thread, NULL);
 	i = 0;
 	while (i < data->num_philos)
 	{
@@ -46,5 +50,6 @@ int	main(int ac, char **av)
 	data.start_time = get_time_ms();
 	start_threads(&data);
 
+	cleanup(&data);
 	return (0);
 }
