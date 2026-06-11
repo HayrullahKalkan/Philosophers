@@ -23,7 +23,7 @@ typedef struct s_data
 
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
-
+	pthread_mutex_t sim_mutex;
 	t_philo			*philos;
 
 }	t_data;
@@ -59,5 +59,7 @@ void	*monitor(void *arg);
 long	get_time_ms(void);
 void	print_status(t_philo *philo, char *msg);
 int		check_death(t_philo *philo);
+int		get_sim_end(t_data *data);
+void	set_sim_end(t_data *data);
 
 #endif

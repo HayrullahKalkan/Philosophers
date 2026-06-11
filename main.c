@@ -48,6 +48,14 @@ int	main(int ac, char **av)
 		return (printf("Error: init\n"), 1);
 
 	data.start_time = get_time_ms();
+	int i;
+
+	i = 0;
+	while (i < data.num_philos)
+	{
+		data.philos[i].last_meal = data.start_time;
+		i++;
+	}
 	start_threads(&data);
 
 	cleanup(&data);

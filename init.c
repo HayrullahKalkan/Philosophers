@@ -65,16 +65,38 @@ int	init_philos(t_data *data)
 void	print_status(t_philo *philo, char *msg)
 {
 	pthread_mutex_lock(&philo->data->print_mutex);
-	printf("%ld %d %s\n",
-		get_time_ms() - philo->data->start_time,
-		philo->id,
-		msg);
+
+	if (!get_sim_end(philo->data))
+	{
+		printf("%ld %d %s\n",
+			get_time_ms() - philo->data->start_time,
+			philo->id,
+			msg);
+	}
+
 	pthread_mutex_unlock(&philo->data->print_mutex);
 }
 
+int	get_sim_end(t_data *data)
+{
+	int value;
+
+	pthread_mutex_lock(&data->sim_mutex);
+	value = data->simulation_end;
+	pthread_mutex_unlock(&data->sim_mutex);
+	return (value);
+}
+
+void	set_sim_end(t_data *data)
+{
+	pthread_mutex_lock(&data->sim_mutex);
+	data->simulation_end = 1;
+	pthread_mutex_unlock(&data->sim_mutex);
+}
 
 int	init_all(t_data *data)
 {
+	pthread_mutex_init(&data->sim_mutex, NULL);
 	if (init_forks(data))
 		return (1);
 	if (init_philos(data))
