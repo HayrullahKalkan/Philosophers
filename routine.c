@@ -130,7 +130,7 @@ void	*monitor(void *arg)
 	long	last_meal;
 	int		meals;
 	int		finished;
-
+	long	now;
 	data = (t_data *)arg;
 
 	while (!get_sim_end(data))
@@ -144,7 +144,7 @@ void	*monitor(void *arg)
 			pthread_mutex_lock(&data->philos[i].meal_mutex);
 			last_meal = data->philos[i].last_meal;
 			pthread_mutex_unlock(&data->philos[i].meal_mutex);
-			long now = get_time_ms();
+			now = get_time_ms();
 			if (now - last_meal > data->time_to_die)
 			{
 				pthread_mutex_lock(&data->sim_mutex);
