@@ -55,7 +55,9 @@ int	init_philos(t_data *data)
 			(i + 1) % data->num_philos
 		];
 
-		pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL);
+		//pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL);
+		pthread_mutex_init(&data->philos[i].state_mutex, NULL);
+		pthread_mutex_init(&data->philos[i].meal_mutex, NULL);
 
 		i++;
 	}
@@ -106,7 +108,7 @@ int	init_all(t_data *data)
 	return (0);
 }
 
-void	cleanup(t_data *data)
+void	free_func(t_data *data)
 {
 	int	i;
 
@@ -116,7 +118,8 @@ void	cleanup(t_data *data)
 	i = 0;
 	while (i < data->num_philos)
 	{
-		pthread_mutex_destroy(&data->philos[i].last_meal_mutex);
+		pthread_mutex_destroy(&data->philos[i].state_mutex);
+		pthread_mutex_destroy(&data->philos[i].meal_mutex);
 		i++;
 	}
 
@@ -128,7 +131,7 @@ void	cleanup(t_data *data)
 	}
 
 	pthread_mutex_destroy(&data->print_mutex);
-
+	pthread_mutex_destroy(&data->sim_mutex);
 	if (data->forks)
 		free(data->forks);
 	if (data->philos)

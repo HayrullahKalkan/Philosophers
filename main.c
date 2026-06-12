@@ -48,16 +48,17 @@ int	main(int ac, char **av)
 		return (printf("Error: init\n"), 1);
 
 	data.start_time = get_time_ms();
-	int i;
 
-	i = 0;
+	int i = 0;
 	while (i < data.num_philos)
 	{
+		pthread_mutex_lock(&data.philos[i].meal_mutex);
 		data.philos[i].last_meal = data.start_time;
+		pthread_mutex_unlock(&data.philos[i].meal_mutex);
 		i++;
 	}
 	start_threads(&data);
 
-	cleanup(&data);
+	free_func(&data);
 	return (0);
 }

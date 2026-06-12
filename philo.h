@@ -49,7 +49,10 @@ typedef struct s_philo
 	pthread_t		thread;
 
 	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;	pthread_mutex_t	last_meal_mutex;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	state_mutex;   // ✔ meals_eaten için
+	pthread_mutex_t	meal_mutex;    // ✔ last_meal için
+	//pthread_mutex_t	last_meal_mutex;
 	t_data			*data;
 
 }	t_philo;
@@ -61,7 +64,7 @@ int		ft_isdigit(int c);
 
 /* init */
 int		init_all(t_data *data);
-void	cleanup(t_data *data);
+void	free_func(t_data *data);
 
 /* routine */
 void	*routine(void *arg);
@@ -70,7 +73,6 @@ void	*monitor(void *arg);
 /* utils */
 long	get_time_ms(void);
 void	print_status(t_philo *philo, char *msg);
-int		check_death(t_philo *philo);
 int		get_sim_end(t_data *data);
 void	set_sim_end(t_data *data);
 
