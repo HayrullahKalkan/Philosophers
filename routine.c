@@ -18,16 +18,13 @@ void	ft_usleep(long time)
 
 	start = get_time_ms();
 	while (get_time_ms() - start < time)
-		usleep(50);
+		usleep(200);
 }
-
-static void	eat(t_philo *philo)
+static void eat(t_philo *philo)
 {
 	pthread_mutex_t *first;
 	pthread_mutex_t *second;
-	pthread_mutex_lock(&philo->last_meal_mutex);
-	philo->last_meal = get_time_ms();
-	pthread_mutex_unlock(&philo->last_meal_mutex);
+
 	if (philo->left_fork < philo->right_fork)
 	{
 		first = philo->left_fork;
@@ -45,13 +42,17 @@ static void	eat(t_philo *philo)
 	pthread_mutex_lock(second);
 	print_status(philo, "has taken a fork");
 
+	// ✔ KRİTİK: meal başlangıcı
 	pthread_mutex_lock(&philo->last_meal_mutex);
 	philo->last_meal = get_time_ms();
-	philo->meals_eaten++;
 	pthread_mutex_unlock(&philo->last_meal_mutex);
 
 	print_status(philo, "is eating");
 	ft_usleep(philo->data->time_to_eat);
+
+	pthread_mutex_lock(&philo->last_meal_mutex);
+	philo->meals_eaten++;
+	pthread_mutex_unlock(&philo->last_meal_mutex);
 
 	pthread_mutex_unlock(second);
 	pthread_mutex_unlock(first);
@@ -82,15 +83,11 @@ void	*routine(void *arg)
 	}
 
 	if (philo->id % 2 == 0)
-		usleep(500);
+		usleep(100);
 
 	while (!get_sim_end(philo->data))
 	{
 		eat(philo);
-
-		if (philo->data->must_eat_count != -1
-			&& philo->meals_eaten >= philo->data->must_eat_count)
-			break ;
 
 		sleeping(philo);
 
