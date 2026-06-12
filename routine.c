@@ -110,8 +110,8 @@ void	*routine(void *arg)
 		return (NULL);
 	}
 
-	if (philo->id % 2 == 0)
-		usleep(1000);
+	if (philo->id % 2 == 1)
+		usleep(10000);
 
 	while (!get_sim_end(philo->data))
 	{

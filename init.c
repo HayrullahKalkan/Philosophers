@@ -63,17 +63,18 @@ int	init_philos(t_data *data)
 
 void	print_status(t_philo *philo, char *msg)
 {
-	pthread_mutex_lock(&philo->data->print_mutex);
-
-	if (!get_sim_end(philo->data))
+	pthread_mutex_lock(&philo->data->sim_mutex);
+	
+	if (philo->data->simulation_end == 0)
 	{
+		pthread_mutex_lock(&philo->data->print_mutex);
 		printf("%ld %d %s\n",
 			get_time_ms() - philo->data->start_time,
 			philo->id,
 			msg);
+		pthread_mutex_unlock(&philo->data->print_mutex);
 	}
-
-	pthread_mutex_unlock(&philo->data->print_mutex);
+	pthread_mutex_unlock(&philo->data->sim_mutex);
 }
 
 int	get_sim_end(t_data *data)
@@ -108,7 +109,6 @@ int	init_all(t_data *data)
 
 	// ❗ FIX: finish mutex BURADA OLMALI (loop içinde değil!)
 	pthread_mutex_init(&data->finish_mutex, NULL);
-	data->finished_philos = 0;
 
 	return (0);
 }
