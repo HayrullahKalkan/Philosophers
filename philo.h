@@ -32,7 +32,9 @@ typedef struct s_data
 	int				simulation_end;
 
 	long			start_time;
-
+	int				finished_philos;
+	
+	pthread_mutex_t	finish_mutex;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t sim_mutex;

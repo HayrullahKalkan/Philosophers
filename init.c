@@ -18,9 +18,6 @@ int	init_forks(t_data *data)
 	int	fork_count;
 
 	fork_count = data->num_philos;
-	if (data->num_philos == 1)
-		fork_count = 1;
-
 	data->forks = malloc(sizeof(pthread_mutex_t) * fork_count);
 	if (!data->forks)
 		return (1);
@@ -47,15 +44,15 @@ int	init_philos(t_data *data)
 	{
 		data->philos[i].id = i + 1;
 		data->philos[i].meals_eaten = 0;
+
+		// 🔥 FIX: last_meal MUST be start_time later, not 0 here
 		data->philos[i].last_meal = 0;
+
 		data->philos[i].data = data;
 
 		data->philos[i].left_fork = &data->forks[i];
-		data->philos[i].right_fork = &data->forks[
-			(i + 1) % data->num_philos
-		];
+		data->philos[i].right_fork = &data->forks[(i + 1) % data->num_philos];
 
-		//pthread_mutex_init(&data->philos[i].last_meal_mutex, NULL);
 		pthread_mutex_init(&data->philos[i].state_mutex, NULL);
 		pthread_mutex_init(&data->philos[i].meal_mutex, NULL);
 
@@ -98,13 +95,21 @@ void	set_sim_end(t_data *data)
 
 int	init_all(t_data *data)
 {
+	// global mutexler
 	pthread_mutex_init(&data->sim_mutex, NULL);
+	pthread_mutex_init(&data->print_mutex, NULL);
+
+	data->simulation_end = 0;
+
 	if (init_forks(data))
 		return (1);
 	if (init_philos(data))
 		return (1);
-	if (pthread_mutex_init(&data->print_mutex, NULL))
-		return (1);
+
+	// ❗ FIX: finish mutex BURADA OLMALI (loop içinde değil!)
+	pthread_mutex_init(&data->finish_mutex, NULL);
+	data->finished_philos = 0;
+
 	return (0);
 }
 
