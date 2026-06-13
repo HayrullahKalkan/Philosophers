@@ -53,8 +53,6 @@ int	init_philos(t_data *data)
 	return (0);
 }
 
-
-
 int	init_all(t_data *data)
 {
 	pthread_mutex_init(&data->sim_mutex, NULL);

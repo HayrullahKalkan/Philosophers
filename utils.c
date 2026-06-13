@@ -29,13 +29,13 @@ void	ft_usleep(long time, t_philo *philo)
 	{
 		if (get_sim_end(philo->data))
 			return ;
-		usleep(50); // 100 değil 50
+		usleep(50);
 	}
 }
 
 int	get_sim_end(t_data *data)
 {
-	int value;
+	int	value;
 
 	pthread_mutex_lock(&data->sim_mutex);
 	value = data->simulation_end;

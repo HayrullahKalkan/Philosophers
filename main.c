@@ -21,7 +21,7 @@ int	start_threads(t_data *data)
 	while (i < data->num_philos)
 	{
 		if (pthread_create(&data->philos[i].thread, NULL,
-			routine, &data->philos[i]) != 0)
+				routine, &data->philos[i]) != 0)
 			return (1);
 		i++;
 	}
