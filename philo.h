@@ -53,7 +53,6 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	state_mutex;   // ✔ meals_eaten için
 	pthread_mutex_t	meal_mutex;    // ✔ last_meal için
-	//pthread_mutex_t	last_meal_mutex;
 	t_data			*data;
 
 }	t_philo;
@@ -76,5 +75,7 @@ long	get_time_ms(void);
 void	print_status(t_philo *philo, char *msg);
 int		get_sim_end(t_data *data);
 void	set_sim_end(t_data *data);
+void	ft_usleep(long time, t_philo *philo);
+
 
 #endif

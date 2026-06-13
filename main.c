@@ -40,16 +40,14 @@ int	start_threads(t_data *data)
 int	main(int ac, char **av)
 {
 	t_data	data;
+	int		i;
 
+	i = 0;
 	if (parse_args(ac, av, &data))
 		return (printf("Error: args\n"), 1);
-
 	if (init_all(&data))
 		return (printf("Error: init\n"), 1);
-
 	data.start_time = get_time_ms();
-
-	int i = 0;
 	while (i < data.num_philos)
 	{
 		pthread_mutex_lock(&data.philos[i].meal_mutex);
@@ -58,7 +56,6 @@ int	main(int ac, char **av)
 		i++;
 	}
 	start_threads(&data);
-
 	free_func(&data);
 	return (0);
 }

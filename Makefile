@@ -7,6 +7,7 @@ SRCS = main.c \
 	parse.c \
 	init.c \
 	routine.c \
+	monitor.c \
 	utils.c
 
 OBJS = $(SRCS:.c=.o)

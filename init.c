@@ -21,7 +21,6 @@ int	init_forks(t_data *data)
 	data->forks = malloc(sizeof(pthread_mutex_t) * fork_count);
 	if (!data->forks)
 		return (1);
-
 	i = 0;
 	while (i < fork_count)
 	{
@@ -38,78 +37,34 @@ int	init_philos(t_data *data)
 	data->philos = malloc(sizeof(t_philo) * data->num_philos);
 	if (!data->philos)
 		return (1);
-
 	i = 0;
 	while (i < data->num_philos)
 	{
 		data->philos[i].id = i + 1;
 		data->philos[i].meals_eaten = 0;
-
-		// 🔥 FIX: last_meal MUST be start_time later, not 0 here
 		data->philos[i].last_meal = 0;
-
 		data->philos[i].data = data;
-
 		data->philos[i].left_fork = &data->forks[i];
 		data->philos[i].right_fork = &data->forks[(i + 1) % data->num_philos];
-
 		pthread_mutex_init(&data->philos[i].state_mutex, NULL);
 		pthread_mutex_init(&data->philos[i].meal_mutex, NULL);
-
 		i++;
 	}
 	return (0);
 }
 
-void	print_status(t_philo *philo, char *msg)
-{
-	pthread_mutex_lock(&philo->data->sim_mutex);
-	
-	if (philo->data->simulation_end == 0)
-	{
-		pthread_mutex_lock(&philo->data->print_mutex);
-		printf("%ld %d %s\n",
-			get_time_ms() - philo->data->start_time,
-			philo->id,
-			msg);
-		pthread_mutex_unlock(&philo->data->print_mutex);
-	}
-	pthread_mutex_unlock(&philo->data->sim_mutex);
-}
 
-int	get_sim_end(t_data *data)
-{
-	int value;
-
-	pthread_mutex_lock(&data->sim_mutex);
-	value = data->simulation_end;
-	pthread_mutex_unlock(&data->sim_mutex);
-	return (value);
-}
-
-void	set_sim_end(t_data *data)
-{
-	pthread_mutex_lock(&data->sim_mutex);
-	data->simulation_end = 1;
-	pthread_mutex_unlock(&data->sim_mutex);
-}
 
 int	init_all(t_data *data)
 {
-	// global mutexler
 	pthread_mutex_init(&data->sim_mutex, NULL);
 	pthread_mutex_init(&data->print_mutex, NULL);
-
 	data->simulation_end = 0;
-
 	if (init_forks(data))
 		return (1);
 	if (init_philos(data))
 		return (1);
-
-	// ❗ FIX: finish mutex BURADA OLMALI (loop içinde değil!)
 	pthread_mutex_init(&data->finish_mutex, NULL);
-
 	return (0);
 }
 
@@ -119,7 +74,6 @@ void	free_func(t_data *data)
 
 	if (!data)
 		return ;
-
 	i = 0;
 	while (i < data->num_philos)
 	{
@@ -127,16 +81,15 @@ void	free_func(t_data *data)
 		pthread_mutex_destroy(&data->philos[i].meal_mutex);
 		i++;
 	}
-
 	i = 0;
 	while (i < data->num_philos)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
 		i++;
 	}
-
 	pthread_mutex_destroy(&data->print_mutex);
 	pthread_mutex_destroy(&data->sim_mutex);
+	pthread_mutex_destroy(&data->finish_mutex);
 	if (data->forks)
 		free(data->forks);
 	if (data->philos)
